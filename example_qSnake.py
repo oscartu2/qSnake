@@ -1,4 +1,4 @@
-__author__ = 'oscartu'
+
 from Tkinter import *
 master = Tk()
 
@@ -6,7 +6,7 @@ triangle_size = 0.1
 cell_score_min = -0.2
 cell_score_max = 0.2
 Width = 100
-(x, y) = (5, 5)
+(x, y) = (7, 7)
 actions = ["up", "down", "left", "right"]
 
 board = Canvas(master, width=x*Width, height=y*Width)
@@ -15,11 +15,11 @@ score = 1
 restart = False
 walk_reward = -0.04
 
-walls = [(1, 1), (1, 2), (2, 1), (2, 2)]
-specials = [(4, 1, "red", -1), (4, 0, "green", 1)]
+walls = [(1, 1), (1, 2), (2, 5), (3, 5), (4, 5)]
+specials = [(5, 4, "red", -1), (6, 0, "green", 1)]
 cell_scores = {}
 
-
+# Setup GUI, draw triangles to indicate which way to go
 def create_triangle(i, j, action):
     if action == actions[0]:
         return board.create_polygon((i+0.5-triangle_size)*Width, (j+triangle_size)*Width,
@@ -42,7 +42,7 @@ def create_triangle(i, j, action):
                                     (i+1)*Width, (j+0.5)*Width,
                                     fill="white", width=1)
 
-
+# Draw GUI
 def render_grid():
     global specials, walls, Width, x, y, player
     for i in range(x):
@@ -59,7 +59,7 @@ def render_grid():
 
 render_grid()
 
-
+# Change triangle colour/cell score as the program learns
 def set_cell_score(state, action, val):
     global cell_score_min, cell_score_max
     triangle = cell_scores[state][action]
@@ -73,7 +73,7 @@ def set_cell_score(state, action, val):
     color = "#" + red + green + "00"
     board.itemconfigure(triangle, fill=color)
 
-
+# Move the cube
 def try_move(dx, dy):
     global player, x, y, score, walk_reward, me, restart
     if restart == True:

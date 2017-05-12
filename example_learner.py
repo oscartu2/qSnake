@@ -1,44 +1,46 @@
-__author__ = 'oscartu'
-import qSnake
+
+import example_qSnake
 import threading
 import time
 
 discount = 0.3
-actions = qSnake.actions
+actions = example_qSnake.actions
 states = []
+
+# Setup Q matrix
 Q = {}
-for i in range(qSnake.x):
-    for j in range(qSnake.y):
+for i in range(example_qSnake.x):
+    for j in range(example_qSnake.y):
         states.append((i, j))
 
 for state in states:
     temp = {}
     for action in actions:
         temp[action] = 0.1
-        qSnake.set_cell_score(state, action, temp[action])
+        example_qSnake.set_cell_score(state, action, temp[action])
     Q[state] = temp
 
-for (i, j, c, w) in qSnake.specials:
+for (i, j, c, w) in example_qSnake.specials:
     for action in actions:
         Q[(i, j)][action] = w
-        qSnake.set_cell_score((i, j), action, w)
+        example_qSnake.set_cell_score((i, j), action, w)
 
 
 def do_action(action):
-    s = qSnake.player
-    r = -qSnake.score
+    s = example_qSnake.player
+    r = -example_qSnake.score
     if action == actions[0]:
-        qSnake.try_move(0, -1)
+        example_qSnake.try_move(0, -1)
     elif action == actions[1]:
-        qSnake.try_move(0, 1)
+        example_qSnake.try_move(0, 1)
     elif action == actions[2]:
-        qSnake.try_move(-1, 0)
+        example_qSnake.try_move(-1, 0)
     elif action == actions[3]:
-        qSnake.try_move(1, 0)
+        example_qSnake.try_move(1, 0)
     else:
         return
-    s2 = qSnake.player
-    r += qSnake.score
+    s2 = example_qSnake.player
+    r += example_qSnake.score
     return s, action, r, s2
 
 
@@ -55,7 +57,7 @@ def max_Q(s):
 def inc_Q(s, a, alpha, inc):
     Q[s][a] *= 1 - alpha
     Q[s][a] += alpha * inc
-    qSnake.set_cell_score(s, a, Q[s][a])
+    example_qSnake.set_cell_score(s, a, Q[s][a])
 
 
 def run():
@@ -65,7 +67,7 @@ def run():
     t = 1
     while True:
         # Pick the right action
-        s = qSnake.player
+        s = example_qSnake.player
         max_act, max_val = max_Q(s)
         (s, a, r, s2) = do_action(max_act)
 
@@ -75,8 +77,8 @@ def run():
 
         # Check if the game has restarted
         t += 1.0
-        if qSnake.has_restarted():
-            qSnake.restart_game()
+        if example_qSnake.has_restarted():
+            example_qSnake.restart_game()
             time.sleep(0.01)
             t = 1.0
 
@@ -90,4 +92,4 @@ def run():
 t = threading.Thread(target=run)
 t.daemon = True
 t.start()
-qSnake.start_game()
+example_qSnake.start_game()
